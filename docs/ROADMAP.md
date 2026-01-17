@@ -1,0 +1,261 @@
+# 노션 견적서 웹 뷰어 시스템 개발 로드맵
+
+노션 데이터베이스와 연동하여 클라이언트가 웹에서 견적서를 확인하고 PDF로 다운로드할 수 있는 전문적인 뷰어 시스템
+
+## 개요
+
+노션 견적서 웹 뷰어 시스템은 기업 고객을 위한 견적서 조회 및 다운로드 솔루션으로 다음 기능을 제공합니다:
+
+- **견적서 웹 뷰어**: 노션 API를 통해 견적서 데이터를 조회하여 전문적인 웹 인터페이스로 표시
+- **PDF 다운로드**: 브랜딩이 적용된 A4 규격 PDF 파일 생성 및 다운로드
+- **반응형 디자인**: 모바일, 태블릿, 데스크톱 모든 기기에서 최적화된 뷰 제공
+- **다크모드 지원**: 사용자 선호에 따른 테마 전환 기능
+
+## 개발 워크플로우
+
+1. **작업 계획**
+
+   - 기존 코드베이스를 학습하고 현재 상태를 파악
+   - 새로운 작업을 포함하도록 `ROADMAP.md` 업데이트
+   - 우선순위 작업은 마지막 완료된 작업 다음에 삽입
+
+2. **작업 생성**
+
+   - 기존 코드베이스를 학습하고 현재 상태를 파악
+   - `/tasks` 디렉토리에 새 작업 파일 생성
+   - 명명 형식: `XXX-description.md` (예: `001-setup.md`)
+   - 고수준 명세서, 관련 파일, 수락 기준, 구현 단계 포함
+   - **API/비즈니스 로직 작업 시 "## 테스트 체크리스트" 섹션 필수 포함 (Playwright MCP 테스트 시나리오 작성)**
+   - 예시를 위해 `/tasks` 디렉토리의 마지막 완료된 작업 참조
+   - 초기 상태의 샘플로 `000-sample.md` 참조
+
+3. **작업 구현**
+
+   - 작업 파일의 명세서를 따름
+   - 기능과 기능성 구현
+   - **API 연동 및 비즈니스 로직 구현 시 Playwright MCP로 테스트 수행 필수**
+   - 각 단계 후 작업 파일 내 단계 진행 상황 업데이트
+   - 구현 완료 후 Playwright MCP를 사용한 E2E 테스트 실행
+   - 테스트 통과 확인 후 다음 단계로 진행
+   - 각 단계 완료 후 중단하고 추가 지시를 기다림
+
+4. **로드맵 업데이트**
+
+   - 로드맵에서 완료된 작업을 완료 표시로 변경
+
+## 개발 단계
+
+### Phase 1: 애플리케이션 골격 구축
+
+- **Task 001: 라우트 구조 및 페이지 골격 설정** - 우선순위
+  - `/quote/[id]` 동적 라우트 페이지 생성
+  - 견적서 전용 레이아웃 컴포넌트 골격 구현
+  - 로딩 상태 페이지 (`loading.tsx`) 생성
+  - 에러 처리 페이지 확장 (견적서 전용 404/500)
+
+- **Task 002: 타입 정의 및 데이터 인터페이스 설계**
+  - `src/types/quote.ts` 견적서 관련 타입 정의 파일 생성
+  - QuoteData, QuoteItem, SenderInfo, ReceiverInfo 인터페이스 정의
+  - API 응답 타입 (ApiResponse, ApiError) 정의
+  - 노션 데이터베이스 스키마와 매핑되는 타입 설계
+
+- **Task 003: API 라우트 구조 설정**
+  - `/api/quote/[id]/route.ts` 견적서 데이터 API 엔드포인트 생성
+  - `/api/quote/[id]/pdf/route.ts` PDF 생성 API 엔드포인트 생성
+  - API 응답 형식 및 에러 핸들링 구조 정의
+
+### Phase 2: UI/UX 완성 (더미 데이터 활용)
+
+- **Task 004: 견적서 공통 컴포넌트 라이브러리 구현** - 우선순위
+  - `src/components/quote/` 디렉토리 생성 및 구조화
+  - QuoteHeader 컴포넌트 (로고, 견적 번호, 테마 토글)
+  - QuoteInfo 컴포넌트 (발신/수신자 정보 2컬럼 레이아웃)
+  - QuoteItemsTable 컴포넌트 (품목 테이블, 반응형 스크롤)
+  - QuoteSummary 컴포넌트 (소계, 부가세, 총액)
+  - QuoteNotes 컴포넌트 (비고 섹션)
+  - QuoteActions 컴포넌트 (PDF 다운로드, 인쇄 버튼)
+  - QuoteSkeleton 컴포넌트 (로딩 스켈레톤 UI)
+
+- **Task 005: 견적서 상세 페이지 UI 완성**
+  - 더미 데이터 생성 유틸리티 (`src/lib/mock/quote.ts`)
+  - 견적서 상세 페이지 전체 UI 조합 및 레이아웃 완성
+  - 반응형 디자인 적용 (모바일/태블릿/데스크톱)
+  - 다크모드 스타일링 검증
+  - Framer Motion 애니메이션 적용 (FadeIn, SlideIn)
+
+- **Task 006: 에러 페이지 및 상태 UI 구현**
+  - 견적서 전용 404 에러 페이지 UI
+  - 견적서 전용 500 에러 페이지 UI (재시도 버튼 포함)
+  - 견적서 만료 안내 UI
+  - 토스트 알림 통합 (Sonner)
+
+### Phase 3: 핵심 기능 구현
+
+- **Task 007: 노션 API 연동 및 데이터 조회** - 우선순위
+  - `@notionhq/client` 패키지 설치 및 설정
+  - `src/lib/notion/client.ts` 노션 클라이언트 초기화
+  - `src/lib/notion/queries.ts` 데이터베이스 쿼리 함수 구현
+  - `src/lib/notion/transformers.ts` 노션 응답 -> 앱 데이터 변환 함수
+  - 환경 변수 설정 (`NOTION_API_KEY`, `NOTION_DATABASE_ID`)
+  - 캐싱 로직 구현 (TTL 5분)
+  - Rate Limit 대응 재시도 로직
+  - Playwright MCP를 활용한 API 통합 테스트
+
+- **Task 008: 견적서 데이터 API 구현**
+  - `/api/quote/[id]` API 라우트 비즈니스 로직 구현
+  - 더미 데이터를 실제 노션 API 호출로 교체
+  - UUID 형식 검증 미들웨어
+  - 에러 핸들링 (404, 500) 구현
+  - API 응답 캐싱
+  - Playwright MCP를 활용한 엔드포인트 테스트
+
+- **Task 009: 견적서 커스텀 훅 구현**
+  - `src/hooks/useQuote.ts` 견적서 데이터 페칭 훅
+  - 로딩, 에러, 데이터 상태 관리
+  - SWR 또는 React Query 패턴 적용 (선택적)
+  - 견적서 페이지에서 더미 데이터를 훅 호출로 교체
+
+- **Task 010: PDF 생성 기능 구현**
+  - PDF 라이브러리 선정 및 설치 (`@react-pdf/renderer` 또는 `puppeteer`)
+  - `src/components/pdf/QuotePdfTemplate.tsx` PDF 템플릿 컴포넌트
+  - `src/lib/pdf/generator.ts` PDF 생성 로직
+  - `/api/quote/[id]/pdf` API 라우트 구현
+  - 한글 폰트 (Noto Sans KR) 임베딩
+  - A4 규격 및 페이지 분할 처리
+  - 회사 로고 및 브랜딩 적용
+  - Playwright MCP를 활용한 PDF 다운로드 테스트
+
+- **Task 011: PDF 다운로드 및 인쇄 기능 연동**
+  - `src/hooks/usePdfDownload.ts` PDF 다운로드 훅 구현
+  - 다운로드 버튼 클릭 -> PDF 생성 -> 브라우저 다운로드 플로우
+  - PDF 생성 중 로딩 상태 표시
+  - 인쇄 기능 구현 (브라우저 print 다이얼로그)
+  - 인쇄용 CSS 스타일시트 (`@media print`)
+  - 에러 핸들링 및 토스트 알림
+
+- **Task 012: 핵심 기능 통합 테스트**
+  - Playwright MCP를 사용한 전체 사용자 플로우 테스트
+  - 견적서 조회 -> PDF 다운로드 E2E 테스트
+  - 견적서 조회 -> 인쇄 E2E 테스트
+  - 에러 케이스 테스트 (존재하지 않는 견적서, API 오류)
+  - 반응형 테스트 (모바일, 태블릿, 데스크톱)
+
+### Phase 4: 고급 기능 및 최적화
+
+- **Task 013: 성능 최적화** - 우선순위
+  - 이미지 최적화 (Next.js Image 컴포넌트)
+  - 코드 스플리팅 및 동적 임포트
+  - Lighthouse 성능 점수 90점 이상 달성
+  - Core Web Vitals (LCP, FID, CLS) 최적화
+  - API 응답 캐싱 전략 검토 및 개선
+
+- **Task 014: 접근성 및 보안 강화**
+  - WCAG 2.1 AA 수준 접근성 준수
+  - 키보드 네비게이션 지원
+  - 스크린 리더용 aria-label 추가
+  - 색상 대비율 4.5:1 이상 확보
+  - Rate Limiting 구현 (IP당 요청 제한)
+  - 입력 검증 강화 (Zod 스키마)
+  - XSS 방지 검증
+
+- **Task 015: 테스트 코드 작성 및 CI/CD 구축**
+  - Jest 설정 및 단위 테스트 작성
+  - 컴포넌트 테스트 (React Testing Library)
+  - API 통합 테스트
+  - 테스트 커버리지 80% 이상 달성
+  - GitHub Actions CI/CD 파이프라인 구축
+  - Lint, 타입 체크, 테스트 자동화
+
+- **Task 016: 프로덕션 배포 및 모니터링**
+  - Vercel 프로덕션 환경 설정
+  - 환경 변수 프로덕션 설정
+  - 도메인 연결 및 SSL 인증서
+  - 에러 모니터링 설정 (Sentry 또는 유사 도구)
+  - 성능 모니터링 설정
+  - 배포 완료 및 운영 가이드 문서화
+
+## 기술 스택
+
+| 카테고리 | 기술 | 용도 |
+|----------|------|------|
+| Framework | Next.js 16 | 풀스택 프레임워크 |
+| Runtime | React 19 | UI 라이브러리 |
+| Language | TypeScript 5 | 타입 안전성 |
+| Styling | TailwindCSS 4 | 유틸리티 CSS |
+| UI Components | ShadcnUI | 컴포넌트 라이브러리 |
+| Animation | Framer Motion | 애니메이션 |
+| Theme | next-themes | 다크모드 |
+| Toast | Sonner | 알림 메시지 |
+| Notion API | @notionhq/client | 노션 연동 |
+| PDF | @react-pdf/renderer | PDF 생성 |
+| Date | date-fns | 날짜 처리 |
+| Validation | Zod | 스키마 검증 |
+
+## 디렉토리 구조 (신규 추가분)
+
+```
+src/
+├── app/
+│   ├── (main)/
+│   │   └── quote/
+│   │       └── [id]/
+│   │           ├── page.tsx           # 견적서 상세 페이지
+│   │           └── loading.tsx        # 로딩 UI
+│   └── api/
+│       └── quote/
+│           └── [id]/
+│               ├── route.ts           # 견적서 데이터 API
+│               └── pdf/
+│                   └── route.ts       # PDF 생성 API
+├── components/
+│   ├── quote/
+│   │   ├── QuoteHeader.tsx           # 견적서 헤더
+│   │   ├── QuoteInfo.tsx             # 발신/수신자 정보
+│   │   ├── QuoteItemsTable.tsx       # 품목 테이블
+│   │   ├── QuoteSummary.tsx          # 금액 요약
+│   │   ├── QuoteNotes.tsx            # 비고 섹션
+│   │   ├── QuoteActions.tsx          # 액션 버튼 (PDF, 인쇄)
+│   │   ├── QuoteSkeleton.tsx         # 스켈레톤 로딩
+│   │   └── index.ts                  # 배럴 익스포트
+│   └── pdf/
+│       └── QuotePdfTemplate.tsx      # PDF 템플릿
+├── lib/
+│   ├── notion/
+│   │   ├── client.ts                 # 노션 클라이언트
+│   │   ├── queries.ts                # 노션 쿼리 함수
+│   │   └── transformers.ts           # 데이터 변환 함수
+│   ├── pdf/
+│   │   └── generator.ts              # PDF 생성 로직
+│   └── mock/
+│       └── quote.ts                  # 더미 데이터
+├── types/
+│   └── quote.ts                      # 견적서 관련 타입
+└── hooks/
+    ├── useQuote.ts                   # 견적서 데이터 훅
+    └── usePdfDownload.ts             # PDF 다운로드 훅
+```
+
+## 예상 일정
+
+| Phase | 기간 | 주요 산출물 |
+|-------|------|------------|
+| Phase 1: 애플리케이션 골격 구축 | 1주 | 라우트 구조, 타입 정의, API 골격 |
+| Phase 2: UI/UX 완성 | 2주 | 모든 컴포넌트 UI, 더미 데이터 연동 |
+| Phase 3: 핵심 기능 구현 | 2주 | 노션 연동, PDF 생성, 실제 데이터 연동 |
+| Phase 4: 고급 기능 및 최적화 | 1.5주 | 성능 최적화, 테스트, 배포 |
+
+**총 예상 기간: 6.5주**
+
+## 우선순위 기준
+
+- **P0 (Must Have)**: 견적서 조회, PDF 다운로드, 노션 연동, 반응형 UI
+- **P1 (Should Have)**: 인쇄 기능, 다크모드, 접근성
+- **P2 (Nice to Have)**: 실시간 갱신, 고급 애니메이션
+
+## 품질 기준
+
+- Lighthouse Performance: 90점 이상
+- Lighthouse Accessibility: 90점 이상
+- 테스트 커버리지: 80% 이상
+- 페이지 로드 시간: 3초 이내
+- PDF 생성 시간: 5초 이내
