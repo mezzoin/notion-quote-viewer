@@ -321,10 +321,10 @@ export function QuotePdfTemplate({ quote }: QuotePdfTemplateProps) {
               <Text style={styles.infoLabel}>회사명/고객명</Text>
               <Text style={styles.infoValue}>{quote.receiver.companyName}</Text>
             </View>
-            {quote.receiver.contactPerson && (
+            {quote.receiver.representative && (
               <View style={styles.infoRow}>
                 <Text style={styles.infoLabel}>담당자</Text>
-                <Text style={styles.infoValue}>{quote.receiver.contactPerson}</Text>
+                <Text style={styles.infoValue}>{quote.receiver.representative}</Text>
               </View>
             )}
             {quote.receiver.address && (
@@ -399,7 +399,7 @@ export function QuotePdfTemplate({ quote }: QuotePdfTemplateProps) {
           <View style={styles.notesSection}>
             <Text style={styles.notesTitle}>비고</Text>
             <View style={styles.notesBox}>
-              {quote.notes.map((note, index) => (
+              {quote.notes.split("\n").filter(Boolean).map((note, index) => (
                 <Text key={index} style={styles.noteText}>• {note}</Text>
               ))}
             </View>

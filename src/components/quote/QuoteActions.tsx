@@ -91,10 +91,15 @@ export function QuoteActions({ quoteId }: QuoteActionsProps) {
   };
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-2" role="group" aria-label="견적서 액션">
       {/* 인쇄 버튼 */}
-      <Button variant="outline" size="sm" onClick={handlePrint}>
-        <Printer className="mr-2 h-4 w-4" />
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={handlePrint}
+        aria-label="견적서 인쇄"
+      >
+        <Printer className="mr-2 h-4 w-4" aria-hidden="true" />
         인쇄
       </Button>
 
@@ -104,15 +109,17 @@ export function QuoteActions({ quoteId }: QuoteActionsProps) {
         size="sm"
         onClick={handleDownloadPdf}
         disabled={isDownloading}
+        aria-label={isDownloading ? "PDF 다운로드 중" : "PDF 파일로 다운로드"}
+        aria-busy={isDownloading}
       >
         {isDownloading ? (
           <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
             다운로드 중...
           </>
         ) : (
           <>
-            <Download className="mr-2 h-4 w-4" />
+            <Download className="mr-2 h-4 w-4" aria-hidden="true" />
             PDF 다운로드
           </>
         )}

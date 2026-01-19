@@ -68,13 +68,19 @@ export async function GET(
       );
     }
 
-    // 성공 응답
+    // 성공 응답 (캐시 헤더 포함)
     return NextResponse.json(
       {
         success: true,
         data: quoteData,
       },
-      { status: 200 }
+      {
+        status: 200,
+        headers: {
+          // 60초 동안 캐시, 이후 5분간 stale 데이터 제공하며 백그라운드 갱신
+          "Cache-Control": "public, max-age=60, stale-while-revalidate=300",
+        },
+      }
     );
   } catch (error) {
     // 에러 로깅 (프로덕션에서는 에러 모니터링 서비스로 전송)

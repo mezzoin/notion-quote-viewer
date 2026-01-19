@@ -16,6 +16,10 @@ import {
 import { getInvoiceById } from "@/lib/notion/service";
 import { isNotionConfigured } from "@/lib/notion/client";
 
+// ISR(Incremental Static Regeneration) 설정
+// 60초마다 페이지를 백그라운드에서 재생성
+export const revalidate = 60;
+
 // 페이지 Props 타입
 interface QuotePageProps {
   params: Promise<{ id: string }>;

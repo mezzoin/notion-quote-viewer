@@ -52,16 +52,18 @@ export function QuoteItemsTable({ items }: QuoteItemsTableProps) {
 
   return (
     <div className="overflow-x-auto rounded-lg border">
-      <Table>
+      <Table aria-label="견적서 품목 목록">
         <TableHeader>
           <TableRow className="bg-muted/50">
-            <TableHead className="w-12 text-center">#</TableHead>
-            <TableHead>품목명</TableHead>
+            <TableHead className="w-12 text-center" scope="col">
+              <span className="sr-only">순번</span>#
+            </TableHead>
+            <TableHead scope="col">품목명</TableHead>
             {/* 설명 컬럼: 데스크톱에서만 표시 */}
-            <TableHead className="hidden md:table-cell">설명</TableHead>
-            <TableHead className="w-20 text-right">수량</TableHead>
-            <TableHead className="w-32 text-right">단가</TableHead>
-            <TableHead className="w-32 text-right">금액</TableHead>
+            <TableHead className="hidden md:table-cell" scope="col">설명</TableHead>
+            <TableHead className="w-20 text-right" scope="col">수량</TableHead>
+            <TableHead className="w-32 text-right" scope="col">단가</TableHead>
+            <TableHead className="w-32 text-right" scope="col">금액</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -70,7 +72,9 @@ export function QuoteItemsTable({ items }: QuoteItemsTableProps) {
               <TableCell className="text-center text-muted-foreground">
                 {index + 1}
               </TableCell>
-              <TableCell className="font-medium">{item.name}</TableCell>
+              <TableCell className="font-medium" scope="row">
+                {item.name}
+              </TableCell>
               {/* 설명 컬럼: 데스크톱에서만 표시 */}
               <TableCell className="hidden text-muted-foreground md:table-cell">
                 {item.description || "-"}

@@ -78,8 +78,8 @@ export async function GET(
     const filename = `견적서_${quote.quoteNumber}.pdf`;
     const encodedFilename = encodeURIComponent(filename);
 
-    // PDF 응답 반환
-    return new NextResponse(pdfBuffer, {
+    // PDF 응답 반환 (Buffer를 Uint8Array로 변환)
+    return new NextResponse(new Uint8Array(pdfBuffer), {
       status: 200,
       headers: {
         "Content-Type": "application/pdf",

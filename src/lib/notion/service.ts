@@ -95,7 +95,8 @@ export async function getItemsByInvoiceId(invoiceId: string): Promise<QuoteItem[
 
   try {
     // 노션 SDK databases.query 사용
-    const response = await notion.databases.query({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const response = await (notion as any).databases.query({
       database_id: ITEMS_DB_ID,
       filter: {
         property: "Invoices",
@@ -106,8 +107,10 @@ export async function getItemsByInvoiceId(invoiceId: string): Promise<QuoteItem[
     });
 
     return response.results
-      .filter((page): page is PageObjectResponse => "properties" in page)
-      .map((page) => mapNotionItem(page as unknown as NotionItemPage));
+      .filter((page: unknown): page is PageObjectResponse =>
+        typeof page === "object" && page !== null && "properties" in page
+      )
+      .map((page: PageObjectResponse) => mapNotionItem(page as unknown as NotionItemPage));
   } catch (error) {
     console.error("품목 조회 실패:", error);
     return [];

@@ -18,3 +18,13 @@ export const navItems: NavItem[] = [
 export const footerLinks: NavItem[] = [
   { label: "GitHub", href: "https://github.com" },
 ];
+
+// Rate Limiting 설정
+export const rateLimitConfig = {
+  /** Rate Limit 윈도우 시간 (밀리초) - 1분 */
+  windowMs: 60 * 1000,
+  /** 윈도우 시간 내 최대 요청 수 */
+  maxRequests: 60,
+  /** Rate Limit 적용 경로 패턴 */
+  pathPattern: /^\/api\//,
+} as const;
