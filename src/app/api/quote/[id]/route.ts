@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isValidUUID } from "@/lib/utils";
+import { getInvoiceById } from "@/lib/notion/service";
+import { isNotionConfigured } from "@/lib/notion/client";
 import type { ApiResponse, QuoteData } from "@/types/quote";
 
 // API 라우트 Props 타입
@@ -35,18 +37,62 @@ export async function GET(
       );
     }
 
-    // TODO: Phase 3에서 실제 노션 API 연동 구현
-    // 현재는 더미 응답 반환
+    // 노션 설정 확인
+    if (!isNotionConfigured()) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "CONFIG_ERROR",
+            message: "노션 API 설정이 완료되지 않았습니다. 환경변수를 확인하세요.",
+          },
+        },
+        { status: 500 }
+      );
+    }
+
+    // 노션에서 견적서 조회
+    const quoteData = await getInvoiceById(id);
+
+    // 견적서가 존재하지 않는 경우
+    if (!quoteData) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "NOT_FOUND",
+            message: "요청한 견적서를 찾을 수 없습니다.",
+          },
+        },
+        { status: 404 }
+      );
+    }
+
+    // 성공 응답
     return NextResponse.json(
       {
         success: true,
-        data: null, // Phase 3에서 실제 데이터로 교체
+        data: quoteData,
       },
       { status: 200 }
     );
   } catch (error) {
     // 에러 로깅 (프로덕션에서는 에러 모니터링 서비스로 전송)
     console.error("견적서 조회 API 에러:", error);
+
+    // 노션 API 에러 세부 처리
+    if (isNotionApiError(error)) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "NOTION_ERROR",
+            message: `노션 API 오류: ${error.message}`,
+          },
+        },
+        { status: 502 }
+      );
+    }
 
     return NextResponse.json(
       {
@@ -59,4 +105,18 @@ export async function GET(
       { status: 500 }
     );
   }
+}
+
+/**
+ * 노션 API 에러인지 확인합니다.
+ */
+function isNotionApiError(error: unknown): error is { code: string; message: string } {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    "message" in error &&
+    typeof (error as { code: unknown }).code === "string" &&
+    typeof (error as { message: unknown }).message === "string"
+  );
 }
