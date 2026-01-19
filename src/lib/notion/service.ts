@@ -94,9 +94,9 @@ export async function getItemsByInvoiceId(invoiceId: string): Promise<QuoteItem[
   }
 
   try {
-    // 노션 SDK v5에서는 dataSources.query 사용
-    const response = await notion.dataSources.query({
-      data_source_id: ITEMS_DB_ID,
+    // 노션 SDK databases.query 사용
+    const response = await notion.databases.query({
+      database_id: ITEMS_DB_ID,
       filter: {
         property: "Invoices",
         relation: {

@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { Container } from "@/components/shared/Container";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -10,10 +11,10 @@ import {
   QuoteSummary,
   QuoteNotes,
   QuoteActions,
-  QuoteStatusBadge,
   QuoteExpired,
 } from "@/components/quote";
-import { generateMockQuote } from "@/lib/mock/quote";
+import { getInvoiceById } from "@/lib/notion/service";
+import { isNotionConfigured } from "@/lib/notion/client";
 
 // 페이지 Props 타입
 interface QuotePageProps {
@@ -25,8 +26,23 @@ export async function generateMetadata({
   params,
 }: QuotePageProps): Promise<Metadata> {
   const { id } = await params;
-  // TODO: Phase 3에서 실제 견적서 데이터 조회로 변경
-  const quote = generateMockQuote(id);
+
+  // 노션 설정 확인
+  if (!isNotionConfigured()) {
+    return {
+      title: "견적서 - 설정 오류",
+      description: "노션 API 설정을 확인하세요.",
+    };
+  }
+
+  const quote = await getInvoiceById(id);
+
+  if (!quote) {
+    return {
+      title: "견적서를 찾을 수 없습니다",
+      description: "요청하신 견적서가 존재하지 않습니다.",
+    };
+  }
 
   return {
     title: `${quote.title} - ${quote.quoteNumber}`,
@@ -58,8 +74,19 @@ function getExpiredDays(validUntil?: string): number | undefined {
 export default async function QuoteDetailPage({ params }: QuotePageProps) {
   const { id } = await params;
 
-  // TODO: Phase 3에서 실제 노션 API 호출로 변경
-  const quote = generateMockQuote(id);
+  // 노션 설정 확인
+  if (!isNotionConfigured()) {
+    throw new Error("노션 API 설정이 완료되지 않았습니다.");
+  }
+
+  // 노션에서 견적서 데이터 조회
+  const quote = await getInvoiceById(id);
+
+  // 견적서가 없으면 404
+  if (!quote) {
+    notFound();
+  }
+
   const expired = isQuoteExpired(quote.validUntil);
   const expiredDays = getExpiredDays(quote.validUntil);
 
