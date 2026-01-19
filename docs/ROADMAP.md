@@ -22,13 +22,11 @@
 2. **작업 생성**
 
    - 기존 코드베이스를 학습하고 현재 상태를 파악
-   - `/tasks` 디렉토리에 새 작업 파일 생성
    - 명명 형식: `XXX-description.md` (예: `001-setup.md`)
    - 고수준 명세서, 관련 파일, 수락 기준, 구현 단계 포함
    - **API/비즈니스 로직 작업 시 "## 테스트 체크리스트" 섹션 필수 포함 (Playwright MCP 테스트 시나리오 작성)**
-   - 예시를 위해 `/tasks` 디렉토리의 마지막 완료된 작업 참조
-   - 초기 상태의 샘플로 `000-sample.md` 참조
-
+   
+   
 3. **작업 구현**
 
    - 작업 파일의 명세서를 따름
@@ -45,49 +43,53 @@
 
 ## 개발 단계
 
-### Phase 1: 애플리케이션 골격 구축
+### Phase 1: 애플리케이션 골격 구축 ✅
 
-- **Task 001: 라우트 구조 및 페이지 골격 설정** - 우선순위
-  - `/quote/[id]` 동적 라우트 페이지 생성
-  - 견적서 전용 레이아웃 컴포넌트 골격 구현
-  - 로딩 상태 페이지 (`loading.tsx`) 생성
-  - 에러 처리 페이지 확장 (견적서 전용 404/500)
+- **Task 001: 라우트 구조 및 페이지 골격 설정** ✅ - 완료
+  - ✅ `/quote/[id]` 동적 라우트 페이지 생성
+  - ✅ 견적서 전용 레이아웃 컴포넌트 골격 구현
+  - ✅ 로딩 상태 페이지 (`loading.tsx`) 생성
+  - ✅ 에러 처리 페이지 확장 (견적서 전용 404/500)
 
-- **Task 002: 타입 정의 및 데이터 인터페이스 설계**
-  - `src/types/quote.ts` 견적서 관련 타입 정의 파일 생성
-  - QuoteData, QuoteItem, SenderInfo, ReceiverInfo 인터페이스 정의
-  - API 응답 타입 (ApiResponse, ApiError) 정의
-  - 노션 데이터베이스 스키마와 매핑되는 타입 설계
+- **Task 002: 타입 정의 및 데이터 인터페이스 설계** ✅ - 완료
+  - ✅ `src/types/quote.ts` 견적서 관련 타입 정의 파일 생성
+  - ✅ QuoteData, QuoteItem, SenderInfo, ReceiverInfo 인터페이스 정의
+  - ✅ API 응답 타입 (ApiResponse, ApiError) 정의
+  - ✅ 노션 데이터베이스 스키마와 매핑되는 타입 설계
 
-- **Task 003: API 라우트 구조 설정**
-  - `/api/quote/[id]/route.ts` 견적서 데이터 API 엔드포인트 생성
-  - `/api/quote/[id]/pdf/route.ts` PDF 생성 API 엔드포인트 생성
-  - API 응답 형식 및 에러 핸들링 구조 정의
+- **Task 003: API 라우트 구조 설정** ✅ - 완료
+  - ✅ `/api/quote/[id]/route.ts` 견적서 데이터 API 엔드포인트 생성
+  - ✅ `/api/quote/[id]/pdf/route.ts` PDF 생성 API 엔드포인트 생성
+  - ✅ API 응답 형식 및 에러 핸들링 구조 정의
 
-### Phase 2: UI/UX 완성 (더미 데이터 활용)
+### Phase 2: UI/UX 완성 (더미 데이터 활용) ✅
 
-- **Task 004: 견적서 공통 컴포넌트 라이브러리 구현** - 우선순위
-  - `src/components/quote/` 디렉토리 생성 및 구조화
-  - QuoteHeader 컴포넌트 (로고, 견적 번호, 테마 토글)
-  - QuoteInfo 컴포넌트 (발신/수신자 정보 2컬럼 레이아웃)
-  - QuoteItemsTable 컴포넌트 (품목 테이블, 반응형 스크롤)
-  - QuoteSummary 컴포넌트 (소계, 부가세, 총액)
-  - QuoteNotes 컴포넌트 (비고 섹션)
-  - QuoteActions 컴포넌트 (PDF 다운로드, 인쇄 버튼)
-  - QuoteSkeleton 컴포넌트 (로딩 스켈레톤 UI)
+- **Task 004: 견적서 공통 컴포넌트 라이브러리 구현** ✅ - 완료
+  - ✅ `src/components/quote/` 디렉토리 생성 및 구조화
+  - ✅ QuoteStatusBadge 컴포넌트 (상태 배지)
+  - ✅ QuoteHeader 컴포넌트 (아이콘, 제목, 견적번호, 상태 배지)
+  - ✅ QuoteInfo 컴포넌트 (발신/수신자 정보 2컬럼 레이아웃)
+  - ✅ QuoteItemsTable 컴포넌트 (품목 테이블, 반응형 스크롤)
+  - ✅ QuoteSummary 컴포넌트 (소계, 부가세, 총액)
+  - ✅ QuoteNotes 컴포넌트 (비고 섹션)
+  - ✅ QuoteActions 컴포넌트 (PDF 다운로드, 인쇄 버튼)
+  - ✅ QuoteSkeleton 컴포넌트 (로딩 스켈레톤 UI)
+  - ✅ QuoteExpired 컴포넌트 (만료 경고 UI)
+  - ✅ 배럴 익스포트 (`index.ts`)
 
-- **Task 005: 견적서 상세 페이지 UI 완성**
-  - 더미 데이터 생성 유틸리티 (`src/lib/mock/quote.ts`)
-  - 견적서 상세 페이지 전체 UI 조합 및 레이아웃 완성
-  - 반응형 디자인 적용 (모바일/태블릿/데스크톱)
-  - 다크모드 스타일링 검증
-  - Framer Motion 애니메이션 적용 (FadeIn, SlideIn)
+- **Task 005: 견적서 상세 페이지 UI 완성** ✅ - 완료
+  - ✅ 더미 데이터 생성 유틸리티 (`src/lib/mock/quote.ts`)
+  - ✅ formatCurrency 유틸리티 함수 (`src/lib/utils.ts`)
+  - ✅ 견적서 상세 페이지 전체 UI 조합 및 레이아웃 완성
+  - ✅ 반응형 디자인 적용 (모바일/태블릿/데스크톱)
+  - ✅ 다크모드 스타일링 검증
+  - ✅ Framer Motion 애니메이션 적용 (FadeIn, StaggerChildren)
+  - ✅ 로딩 페이지 리팩토링 (QuoteSkeleton 활용)
 
-- **Task 006: 에러 페이지 및 상태 UI 구현**
-  - 견적서 전용 404 에러 페이지 UI
-  - 견적서 전용 500 에러 페이지 UI (재시도 버튼 포함)
-  - 견적서 만료 안내 UI
-  - 토스트 알림 통합 (Sonner)
+- **Task 006: 에러 페이지 및 상태 UI 구현** ✅ - 완료
+  - ✅ 견적서 만료 안내 UI (QuoteExpired 컴포넌트)
+  - ✅ 토스트 알림 통합 (Sonner)
+  - ✅ Playwright MCP E2E 테스트 완료
 
 ### Phase 3: 핵심 기능 구현
 
@@ -209,14 +211,16 @@ src/
 │                   └── route.ts       # PDF 생성 API
 ├── components/
 │   ├── quote/
-│   │   ├── QuoteHeader.tsx           # 견적서 헤더
-│   │   ├── QuoteInfo.tsx             # 발신/수신자 정보
-│   │   ├── QuoteItemsTable.tsx       # 품목 테이블
-│   │   ├── QuoteSummary.tsx          # 금액 요약
-│   │   ├── QuoteNotes.tsx            # 비고 섹션
-│   │   ├── QuoteActions.tsx          # 액션 버튼 (PDF, 인쇄)
-│   │   ├── QuoteSkeleton.tsx         # 스켈레톤 로딩
-│   │   └── index.ts                  # 배럴 익스포트
+│   │   ├── QuoteStatusBadge.tsx      # 상태 배지 ✅
+│   │   ├── QuoteHeader.tsx           # 견적서 헤더 ✅
+│   │   ├── QuoteInfo.tsx             # 발신/수신자 정보 ✅
+│   │   ├── QuoteItemsTable.tsx       # 품목 테이블 ✅
+│   │   ├── QuoteSummary.tsx          # 금액 요약 ✅
+│   │   ├── QuoteNotes.tsx            # 비고 섹션 ✅
+│   │   ├── QuoteActions.tsx          # 액션 버튼 (PDF, 인쇄) ✅
+│   │   ├── QuoteSkeleton.tsx         # 스켈레톤 로딩 ✅
+│   │   ├── QuoteExpired.tsx          # 만료 경고 ✅
+│   │   └── index.ts                  # 배럴 익스포트 ✅
 │   └── pdf/
 │       └── QuotePdfTemplate.tsx      # PDF 템플릿
 ├── lib/
@@ -227,9 +231,9 @@ src/
 │   ├── pdf/
 │   │   └── generator.ts              # PDF 생성 로직
 │   └── mock/
-│       └── quote.ts                  # 더미 데이터
+│       └── quote.ts                  # 더미 데이터 ✅
 ├── types/
-│   └── quote.ts                      # 견적서 관련 타입
+│   └── quote.ts                      # 견적서 관련 타입 ✅
 └── hooks/
     ├── useQuote.ts                   # 견적서 데이터 훅
     └── usePdfDownload.ts             # PDF 다운로드 훅

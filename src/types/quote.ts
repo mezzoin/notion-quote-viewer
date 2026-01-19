@@ -61,14 +61,38 @@ export interface QuoteItem {
 }
 
 /**
- * 견적서 상태 타입
- * - draft: 작성 중
- * - sent: 발송됨
- * - accepted: 수락됨
- * - rejected: 거절됨
- * - expired: 만료됨
+ * 노션 DB의 한글 상태값 타입
+ * 노션 데이터베이스 Select 속성에 정의된 값들
  */
-export type QuoteStatus = 'draft' | 'sent' | 'accepted' | 'rejected' | 'expired';
+export type NotionQuoteStatus = "대기" | "승인" | "거절";
+
+/**
+ * 견적서 상태 타입 (앱 내부 사용)
+ * - pending: 대기 중 (노션: 대기)
+ * - approved: 승인됨 (노션: 승인)
+ * - rejected: 거절됨 (노션: 거절)
+ */
+export type QuoteStatus = "pending" | "approved" | "rejected";
+
+/**
+ * 노션 상태 → 앱 상태 매핑 테이블
+ * 노션 DB의 한글 상태값을 앱 내부 영어 상태값으로 변환
+ */
+export const NOTION_STATUS_MAP: Record<NotionQuoteStatus, QuoteStatus> = {
+  "대기": "pending",
+  "승인": "approved",
+  "거절": "rejected",
+} as const;
+
+/**
+ * 앱 상태 → 한글 라벨 매핑 테이블
+ * UI 표시용 한글 라벨
+ */
+export const STATUS_LABELS: Record<QuoteStatus, string> = {
+  pending: "대기",
+  approved: "승인",
+  rejected: "거절",
+} as const;
 
 /**
  * 견적서 전체 데이터 인터페이스
