@@ -6,6 +6,12 @@
 // jest-dom 확장 매처 추가 (toBeInTheDocument, toHaveClass 등)
 import "@testing-library/jest-dom";
 
+// Next.js API 라우트 테스트를 위한 Web API polyfill
+import { TextEncoder, TextDecoder } from "util";
+
+// TextEncoder/TextDecoder polyfill
+Object.assign(global, { TextEncoder, TextDecoder });
+
 // 전역 모킹 설정
 
 // window.matchMedia 모킹 (미디어 쿼리 테스트용)

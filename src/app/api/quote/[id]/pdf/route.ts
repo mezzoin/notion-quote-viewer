@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { renderToBuffer } from "@react-pdf/renderer";
-import { isValidUUID } from "@/lib/utils";
+import { validateQuoteId } from "@/lib/validations";
 import { getInvoiceById } from "@/lib/notion/service";
 import { isNotionConfigured } from "@/lib/notion/client";
 import { QuotePdfTemplate } from "@/components/pdf";
@@ -25,14 +25,15 @@ export async function GET(
   try {
     const { id } = await params;
 
-    // ID 형식 검증
-    if (!isValidUUID(id)) {
+    // Zod 스키마로 ID 형식 검증
+    const validation = validateQuoteId(id);
+    if (!validation.success) {
       return NextResponse.json(
         {
           success: false,
           error: {
             code: "INVALID_ID",
-            message: "유효하지 않은 견적서 ID 형식입니다.",
+            message: validation.error,
           },
         } satisfies ApiResponse<never>,
         { status: 400 }

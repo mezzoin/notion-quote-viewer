@@ -42,7 +42,37 @@ const nextConfig: NextConfig = {
 
   // 헤더 설정 (캐시 및 보안)
   async headers() {
+    // 공통 보안 헤더
+    const securityHeaders = [
+      {
+        key: "X-Content-Type-Options",
+        value: "nosniff",
+      },
+      {
+        key: "X-Frame-Options",
+        value: "DENY",
+      },
+      {
+        key: "X-XSS-Protection",
+        value: "1; mode=block",
+      },
+      {
+        key: "Referrer-Policy",
+        value: "strict-origin-when-cross-origin",
+      },
+      {
+        key: "Permissions-Policy",
+        value: "camera=(), microphone=(), geolocation=()",
+      },
+    ];
+
     return [
+      // 모든 라우트에 보안 헤더 적용
+      {
+        source: "/(.*)",
+        headers: securityHeaders,
+      },
+      // 정적 이미지 파일 캐싱
       {
         source: "/:all*(svg|jpg|png|webp|avif)",
         headers: [
@@ -52,6 +82,7 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      // Next.js 정적 파일 캐싱
       {
         source: "/_next/static/:path*",
         headers: [
