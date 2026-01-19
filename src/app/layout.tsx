@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Noto_Sans_KR } from "next/font/google";
 import { ThemeProvider } from "@/providers/ThemeProvider";
+import { MotionProvider } from "@/providers/MotionProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { siteConfig } from "@/lib/constants";
 import "./globals.css";
@@ -49,8 +50,10 @@ export default function RootLayout({
         className={`${spaceGrotesk.variable} ${notoSansKr.variable} font-sans antialiased`}
       >
         <ThemeProvider>
-          {children}
-          <Toaster position="bottom-right" richColors />
+          <MotionProvider>
+            {children}
+            <Toaster position="bottom-right" richColors />
+          </MotionProvider>
         </ThemeProvider>
       </body>
     </html>
