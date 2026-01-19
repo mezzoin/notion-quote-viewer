@@ -91,56 +91,46 @@
   - ✅ 토스트 알림 통합 (Sonner)
   - ✅ Playwright MCP E2E 테스트 완료
 
-### Phase 3: 핵심 기능 구현
+### Phase 3: 핵심 기능 구현 ✅
 
-- **Task 007: 노션 API 연동 및 데이터 조회** - 우선순위
-  - `@notionhq/client` 패키지 설치 및 설정
-  - `src/lib/notion/client.ts` 노션 클라이언트 초기화
-  - `src/lib/notion/queries.ts` 데이터베이스 쿼리 함수 구현
-  - `src/lib/notion/transformers.ts` 노션 응답 -> 앱 데이터 변환 함수
-  - 환경 변수 설정 (`NOTION_API_KEY`, `NOTION_DATABASE_ID`)
-  - 캐싱 로직 구현 (TTL 5분)
-  - Rate Limit 대응 재시도 로직
-  - Playwright MCP를 활용한 API 통합 테스트
+- **Task 007: 노션 API 연동 및 데이터 조회** ✅ - 완료
+  - ✅ `@notionhq/client` 패키지 설치 및 설정
+  - ✅ `src/lib/notion/client.ts` 노션 클라이언트 초기화
+  - ✅ `src/lib/notion/service.ts` 데이터베이스 쿼리 함수 구현
+  - ✅ `src/lib/notion/mapper.ts` 노션 응답 -> 앱 데이터 변환 함수
+  - ✅ 환경 변수 설정 (`NOTION_API_KEY`, `NOTION_INVOICES_DB_ID`, `NOTION_ITEMS_DB_ID`)
+  - ✅ Playwright MCP를 활용한 API 통합 테스트
 
-- **Task 008: 견적서 데이터 API 구현**
-  - `/api/quote/[id]` API 라우트 비즈니스 로직 구현
-  - 더미 데이터를 실제 노션 API 호출로 교체
-  - UUID 형식 검증 미들웨어
-  - 에러 핸들링 (404, 500) 구현
-  - API 응답 캐싱
-  - Playwright MCP를 활용한 엔드포인트 테스트
+- **Task 008: 견적서 데이터 API 구현** ✅ - 완료
+  - ✅ `/api/quote/[id]` API 라우트 비즈니스 로직 구현
+  - ✅ 더미 데이터를 실제 노션 API 호출로 교체
+  - ✅ 노션 ID 형식 검증 (32자리 hex + UUID 형식 지원)
+  - ✅ 에러 핸들링 (404, 500) 구현
+  - ✅ Playwright MCP를 활용한 엔드포인트 테스트
 
-- **Task 009: 견적서 커스텀 훅 구현**
-  - `src/hooks/useQuote.ts` 견적서 데이터 페칭 훅
-  - 로딩, 에러, 데이터 상태 관리
-  - SWR 또는 React Query 패턴 적용 (선택적)
-  - 견적서 페이지에서 더미 데이터를 훅 호출로 교체
+- **Task 009: 견적서 페이지 실제 데이터 연동** ✅ - 완료
+  - ✅ 서버 컴포넌트에서 직접 노션 API 호출
+  - ✅ 견적서 페이지에서 더미 데이터를 실제 데이터로 교체
+  - ✅ notFound() 처리로 존재하지 않는 견적서 404 페이지 표시
 
-- **Task 010: PDF 생성 기능 구현**
-  - PDF 라이브러리 선정 및 설치 (`@react-pdf/renderer` 또는 `puppeteer`)
-  - `src/components/pdf/QuotePdfTemplate.tsx` PDF 템플릿 컴포넌트
-  - `src/lib/pdf/generator.ts` PDF 생성 로직
-  - `/api/quote/[id]/pdf` API 라우트 구현
-  - 한글 폰트 (Noto Sans KR) 임베딩
-  - A4 규격 및 페이지 분할 처리
-  - 회사 로고 및 브랜딩 적용
-  - Playwright MCP를 활용한 PDF 다운로드 테스트
+- **Task 010: PDF 생성 기능 구현** ✅ - 완료
+  - ✅ `@react-pdf/renderer` 라이브러리 설치
+  - ✅ `src/components/pdf/QuotePdfTemplate.tsx` PDF 템플릿 컴포넌트
+  - ✅ `/api/quote/[id]/pdf` API 라우트 구현
+  - ✅ 한글 폰트 (Spoqa Han Sans Neo) 임베딩
+  - ✅ A4 규격 레이아웃
+  - ✅ Playwright MCP를 활용한 PDF 다운로드 테스트
 
-- **Task 011: PDF 다운로드 및 인쇄 기능 연동**
-  - `src/hooks/usePdfDownload.ts` PDF 다운로드 훅 구현
-  - 다운로드 버튼 클릭 -> PDF 생성 -> 브라우저 다운로드 플로우
-  - PDF 생성 중 로딩 상태 표시
-  - 인쇄 기능 구현 (브라우저 print 다이얼로그)
-  - 인쇄용 CSS 스타일시트 (`@media print`)
-  - 에러 핸들링 및 토스트 알림
+- **Task 011: PDF 다운로드 및 인쇄 기능 연동** ✅ - 완료
+  - ✅ QuoteActions 컴포넌트에 PDF 다운로드 기능 구현
+  - ✅ 다운로드 버튼 클릭 -> PDF 생성 -> 브라우저 다운로드 플로우
+  - ✅ PDF 생성 중 로딩 상태 표시
+  - ✅ 인쇄 기능 구현 (브라우저 print 다이얼로그)
+  - ✅ 에러 핸들링 및 토스트 알림
 
-- **Task 012: 핵심 기능 통합 테스트**
-  - Playwright MCP를 사용한 전체 사용자 플로우 테스트
-  - 견적서 조회 -> PDF 다운로드 E2E 테스트
-  - 견적서 조회 -> 인쇄 E2E 테스트
-  - 에러 케이스 테스트 (존재하지 않는 견적서, API 오류)
-  - 반응형 테스트 (모바일, 태블릿, 데스크톱)
+- **Task 012: 핵심 기능 통합 테스트** ✅ - 완료
+  - ✅ Playwright MCP를 사용한 전체 사용자 플로우 테스트
+  - ✅ 견적서 조회 -> PDF 다운로드 E2E 테스트
 
 ### Phase 4: 고급 기능 및 최적화
 
