@@ -6,17 +6,17 @@
 import { z } from "zod";
 
 /**
- * UUID v4 정규식 패턴
- * 노션 페이지 ID 형식 (하이픈 포함/미포함 모두 지원)
+ * 노션 ID 정규식 패턴
+ * 노션 페이지 ID 형식 (32자리 hex 또는 하이픈 포함 UUID 형식)
  */
-const UUID_REGEX = /^[0-9a-f]{8}-?[0-9a-f]{4}-?4[0-9a-f]{3}-?[89ab][0-9a-f]{3}-?[0-9a-f]{12}$/i;
+const NOTION_ID_REGEX = /^[0-9a-f]{8}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{12}$/i;
 
 /**
  * 노션 페이지 ID를 검증하는 스키마
- * 32자리 hex 또는 하이픈이 포함된 36자리 UUID v4 형식 지원
+ * 32자리 hex 또는 하이픈이 포함된 UUID 형식 지원
  */
 export const notionIdSchema = z.string().refine(
-  (val) => UUID_REGEX.test(val),
+  (val) => NOTION_ID_REGEX.test(val),
   {
     message: "유효하지 않은 노션 ID 형식입니다.",
   }
