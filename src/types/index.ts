@@ -5,6 +5,9 @@ export interface NavItem {
   description?: string;
 }
 
+// 관리자 타입 re-export
+export * from "./admin";
+
 // 사이트 설정 타입
 export interface SiteConfig {
   name: string;

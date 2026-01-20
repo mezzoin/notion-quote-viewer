@@ -1,10 +1,11 @@
 /**
  * Next.js 미들웨어
- * API 엔드포인트에 Rate Limiting을 적용합니다.
+ * API 엔드포인트에 Rate Limiting을 적용하고 관리자 라우트를 보호합니다.
  */
 
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimitConfig } from "@/lib/constants";
+import { ADMIN_SESSION_COOKIE } from "@/lib/auth/admin";
 
 // IP별 요청 추적을 위한 메모리 저장소
 // 프로덕션 환경에서는 Redis 등 분산 캐시 사용 권장
@@ -101,11 +102,44 @@ function checkRateLimit(ip: string): {
 }
 
 /**
+ * 관리자 라우트 보호를 확인합니다.
+ * /admin/login은 제외하고 나머지 /admin/* 경로는 인증이 필요합니다.
+ */
+function checkAdminAuth(request: NextRequest): NextResponse | null {
+  const { pathname } = request.nextUrl;
+
+  // /admin/login은 인증 없이 접근 가능
+  if (pathname === "/admin/login") {
+    return null;
+  }
+
+  // /admin/* 경로는 인증 필요
+  if (pathname.startsWith("/admin")) {
+    const sessionCookie = request.cookies.get(ADMIN_SESSION_COOKIE);
+
+    // 세션 쿠키가 없으면 로그인 페이지로 리다이렉트
+    if (!sessionCookie?.value) {
+      const loginUrl = new URL("/admin/login", request.url);
+      loginUrl.searchParams.set("redirect", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
+  return null;
+}
+
+/**
  * Next.js 미들웨어 함수
- * /api/* 경로의 요청에 Rate Limiting을 적용합니다.
+ * /api/* 경로의 요청에 Rate Limiting을 적용하고 /admin/* 경로를 보호합니다.
  */
 export function middleware(request: NextRequest): NextResponse {
   const { pathname } = request.nextUrl;
+
+  // 관리자 라우트 인증 확인
+  const adminAuthResponse = checkAdminAuth(request);
+  if (adminAuthResponse) {
+    return adminAuthResponse;
+  }
 
   // Rate Limiting 적용 대상 경로 확인
   if (!rateLimitConfig.pathPattern.test(pathname)) {
@@ -156,5 +190,5 @@ export function middleware(request: NextRequest): NextResponse {
 
 // 미들웨어 적용 경로 설정
 export const config = {
-  matcher: ["/api/:path*"],
+  matcher: ["/api/:path*", "/admin/:path*"],
 };

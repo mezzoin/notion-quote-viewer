@@ -1,4 +1,4 @@
-import type { NavItem, SiteConfig } from "@/types";
+import type { NavItem, SiteConfig, AdminNavItem } from "@/types";
 
 // 사이트 설정
 export const siteConfig: SiteConfig = {
@@ -27,4 +27,22 @@ export const rateLimitConfig = {
   maxRequests: 60,
   /** Rate Limit 적용 경로 패턴 */
   pathPattern: /^\/api\//,
+} as const;
+
+// 관리자 네비게이션 메뉴
+export const adminNavItems: AdminNavItem[] = [
+  {
+    label: "견적서 관리",
+    href: "/admin/quotes",
+    icon: "FileText",
+    description: "견적서 목록 조회 및 관리",
+  },
+];
+
+// 관리자 페이지 설정
+export const adminConfig = {
+  /** 페이지당 기본 항목 수 */
+  defaultPageSize: 10,
+  /** 페이지 크기 옵션 */
+  pageSizeOptions: [10, 20, 50, 100],
 } as const;

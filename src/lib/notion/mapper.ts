@@ -17,6 +17,7 @@ import type {
   ReceiverInfo,
   SenderInfo,
 } from "@/types/quote";
+import type { QuoteListItem } from "@/types/admin";
 import { NOTION_STATUS_MAP } from "@/types/quote";
 import { getSenderInfo } from "./sender-config";
 
@@ -203,4 +204,56 @@ export function mapNotionInvoice(
     updatedAt: invoicePage.last_edited_time || createdAt,
     status,
   };
+}
+
+/**
+ * 노션 Invoice 페이지를 QuoteListItem으로 변환합니다.
+ * 목록 조회용 간략한 정보만 추출합니다.
+ *
+ * @param invoicePage - 노션 Invoice 페이지
+ * @param calculatedTotal - 항목에서 계산된 총액 (선택적)
+ * @returns 변환된 QuoteListItem
+ */
+export function mapNotionInvoiceToListItem(
+  invoicePage: NotionInvoicePage,
+  calculatedTotal?: number
+): QuoteListItem {
+  const props = invoicePage.properties;
+
+  const quoteNumber = extractTitle(props["견적서 번호"]);
+  const createdAt = extractDate(props["발행일"]) || invoicePage.created_time;
+  const clientName = extractPlainText(props["클라이언트명"]);
+
+  // 상태 필드가 status 타입인 경우 처리
+  const statusProp = props["상태"];
+  let status: QuoteStatus = "pending";
+  if (statusProp?.type === "status") {
+    const statusValue = (statusProp as { type: "status"; status: { name: string } | null }).status?.name;
+    status = mapNotionStatus(statusValue as RawNotionQuoteStatus);
+  } else {
+    const notionStatus = extractSelect<RawNotionQuoteStatus>(props["상태"]);
+    status = mapNotionStatus(notionStatus);
+  }
+
+  // 총액: 계산된 값 > 노션 DB 값 > 0
+  const dbTotal = extractNumber(props["총 금액"]) || extractNumber(props["총액"]) || extractNumber(props["합계"]) || 0;
+  const total = calculatedTotal !== undefined ? calculatedTotal : dbTotal;
+
+  return {
+    id: invoicePage.id,
+    quoteNumber,
+    title: `견적서 - ${quoteNumber}`,
+    customerName: clientName || "미지정",
+    status,
+    total,
+    createdAt,
+    updatedAt: invoicePage.last_edited_time || createdAt,
+  };
+}
+
+/**
+ * 노션 Invoice 페이지에서 관계된 항목 ID를 추출합니다.
+ */
+export function extractItemIdsFromInvoice(invoicePage: NotionInvoicePage): string[] {
+  return extractRelationIds(invoicePage.properties["항목"]);
 }
